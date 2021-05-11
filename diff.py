@@ -24,13 +24,13 @@ class QAgent():
         x, y = s
         next_x, next_y = s_prime
         a_prime = self.select_action(s_prime)  # S'에서 선택할 액션 (실제로 취한 액션이 아님)
-        # SARSA 업데이트 식을 이용
+        # Q러닝 업데이트 식을 이용
         self.q_table[x, y, a] = self.q_table[x, y, a] + 0.1 * (
-                r + self.q_table[next_x, next_y, a_prime] - self.q_table[x, y, a])
+                r + np.amax(self.q_table[next_x, next_y, :]) - self.q_table[x, y, a])
 
     def anneal_eps(self):
-        self.eps -= 0.03
-        self.eps = max(self.eps, 0.1)
+        self.eps -= 0.01  # Q러닝에선 epsilon 이 좀더 천천히 줄어 들도록 함.
+        self.eps = max(self.eps, 0.2)
 
     def show_table(self):
         q_lst = self.q_table.tolist()
